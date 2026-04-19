@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# chesslens-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing landing page for **[ChessLens](https://chesslens.ai)** — a chess analysis and learning tool that pairs Stockfish + a trained move classifier with AI-generated narration that explains *why* a move was good or bad, calibrated to the player's level (target ELO 600–1800).
 
-Currently, two official plugins are available:
+Two product tiers the site speaks to:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Open-source core** — the full analysis pipeline (Django), self-hostable from [`SailingSF/chesslens-core`](https://github.com/SailingSF/chesslens-core). MIT licensed.
+- **Hosted cloud** (coming soon) — the paid tier. The landing page collects waitlist signups.
 
-## React Compiler
+This repo is **only the marketing site**. The analysis pipeline, auth, and dashboards live elsewhere.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+Vite + React 18 + TypeScript (strict). Single `src/landing.css` with `cl-`-prefixed classes and design tokens on `.cl-root`. See [`CLAUDE.md`](./CLAUDE.md) for architecture details.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Commands
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev      # Vite dev server on :5173
+npm run build    # tsc -b && vite build
+npm run lint     # ESLint flat config
+npm run preview  # serve the production build locally
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Typecheck without emit: `npx tsc --noEmit -p tsconfig.app.json`. No test runner is configured.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deployment — Cloudflare Pages
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The site deploys to Cloudflare Pages at **chesslens.ai**.
+
+**Build settings:**
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | Vite |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | *(leave blank)* |
+| Node version | `20` (set `NODE_VERSION=20` in env vars if the default differs) |
+
+**SPA routing:** the landing page is currently a single route, but if client-side routes are added later, add a `public/_redirects` file with `/*  /index.html  200` so deep links resolve.
+
+**Custom domain:** point `chesslens.ai` (and `www`) at the Pages project in the Cloudflare dashboard. Cloudflare handles TLS automatically.
+
+**Preview deployments:** every non-`master` branch gets a preview URL. `master` publishes to production.
