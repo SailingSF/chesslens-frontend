@@ -1,4 +1,6 @@
 import { BrandGlyph } from '../components/Brand'
+import { GithubIcon } from '../components/icons'
+import { GITHUB_URL } from '../constants'
 import { scrollToId } from '../lib/scrollTo'
 
 export function Nav() {
@@ -12,7 +14,7 @@ export function Nav() {
           scrollToId('top')
         }}
       >
-        <BrandGlyph size={28} />
+        <BrandGlyph size={26} />
         <span className="cl-brand-word">ChessLens</span>
       </a>
 
@@ -23,8 +25,9 @@ export function Nav() {
         <a href="#features" onClick={(e) => { e.preventDefault(); scrollToId('features') }}>
           Features
         </a>
-        <a href="#oss" onClick={(e) => { e.preventDefault(); scrollToId('oss') }}>
-          Open source
+        <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="cl-nav-gh">
+          <GithubIcon size={14} />
+          <span>chesslens-core</span>
         </a>
         <a
           href="#waitlist"

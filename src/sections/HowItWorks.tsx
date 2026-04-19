@@ -15,36 +15,25 @@ export function HowItWorks() {
         <li className="cl-step cl-fade" ref={revealRef}>
           <div className="cl-step-num">01</div>
           <div className="cl-step-body">
-            <h3>Paste your game</h3>
-            <p>
-              Upload any completed game from chess.com, Lichess, or a PGN file on disk.
-              No plugins. No logins to a dozen services.
+            <h3>Import your game</h3>
+            <p style={{ color: 'var(--paper-faint)', fontSize: '14px' }}>
+              Paste a PGN from chess.com, Lichess, or any file. No plugins, no extra logins.
             </p>
-            <div className="cl-step-art" aria-hidden>
-              <div className="cl-pgn-card">
-                <div className="cl-pgn-head">
-                  <span>game.pgn</span>
-                  <span className="cl-pgn-dot" />
-                </div>
-                <div className="cl-pgn-body">
-                  <div>[Event "Rated Rapid"]</div>
-                  <div>[White "you"]</div>
-                  <div>[Black "opponent"]</div>
-                  <div className="cl-pgn-moves">1. e4 e5 2. Nf3 Nc6 3. Bb5 …</div>
-                </div>
-              </div>
-            </div>
           </div>
         </li>
 
         <li className="cl-step cl-fade" ref={revealRef}>
           <div className="cl-step-num">02</div>
           <div className="cl-step-body">
-            <h3>Advanced analysis runs</h3>
+            <h3>Engine + classifier, together</h3>
             <p>
-              Move classification models and modern chess engines evaluate every
-              decision — not just the obvious blunders. Tactical motifs, positional
-              drift, missed resources.
+              A local Stockfish instance evaluates every position at depth. On top of that,
+              a trained classification model assigns each move a grade —{' '}
+              <span style={{ color: 'var(--amber)', fontFamily: 'var(--font-mono)', fontSize: '12px' }}>
+                Best · Great · Inaccuracy · Mistake · Blunder
+              </span>{' '}
+              — the same vocabulary chess.com uses, but with the reasoning to back it up.
+              Tactical motifs, positional drift, missed resources: all surfaced.
             </p>
             <div className="cl-step-art" aria-hidden>
               <EvalGraph />

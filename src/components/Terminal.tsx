@@ -4,7 +4,7 @@
 import { useState } from 'react'
 
 const INSTALL_SNIPPET = [
-  'git clone https://github.com/yourusername/chesslens-core',
+  'git clone https://github.com/SailingSF/chesslens-core',
   'cp .env.example .env',
   'docker compose up',
   '# Open localhost:8000',
@@ -43,7 +43,7 @@ export function Terminal() {
         <code>
           <span className="cl-term-line">
             <span className="cl-term-prompt">$</span> git clone{' '}
-            <span className="cl-term-url">https://github.com/yourusername/chesslens-core</span>
+            <span className="cl-term-url">https://github.com/SailingSF/chesslens-core</span>
           </span>
           <span className="cl-term-line cl-term-muted">
             Cloning into &apos;chesslens-core&apos;…{'\n'}

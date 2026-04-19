@@ -1,4 +1,5 @@
 import { HeroBoard } from '../components/HeroBoard'
+import { GithubIcon } from '../components/icons'
 import { GITHUB_URL } from '../constants'
 import { NOTATION_TICKER } from '../data/heroPosition'
 import { scrollToId } from '../lib/scrollTo'
@@ -11,7 +12,7 @@ export function Hero() {
           <div className="cl-meta">
             <span className="cl-meta-dot" />
             <span className="cl-meta-text">
-              v0.9 · In development · calibrated for ELO 600–1800
+              v0.9
             </span>
           </div>
 
@@ -49,8 +50,9 @@ export function Hero() {
               href={GITHUB_URL}
               target="_blank"
               rel="noreferrer"
-              className="cl-btn cl-btn-ghost"
+              className="cl-btn cl-btn-github"
             >
+              <GithubIcon size={15} />
               View on GitHub
               <span className="cl-btn-arrow" aria-hidden>↗</span>
             </a>
@@ -58,7 +60,7 @@ export function Hero() {
 
           <div className="cl-hero-kicker">
             <span className="cl-kicker-label">
-              A thinking tool for players, not a marketing page.
+              Open source · MIT licensed · self-hostable
             </span>
           </div>
         </div>

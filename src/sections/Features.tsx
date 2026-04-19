@@ -15,8 +15,8 @@ const FEATURES: Feature[] = [
   },
   {
     icon: <IconClassify />,
-    title: 'Advanced move classification',
-    body: 'Powered by models trained to classify moves the same way top platforms do — Best, Inaccuracy, Mistake, Blunder — with the reasoning to back it up.',
+    title: 'Stockfish + move classification',
+    body: 'A local Stockfish engine runs at full depth alongside a trained classifier — every move gets a grade (Best, Great, Inaccuracy, Mistake, Blunder) and the positional reasoning that explains why. No cloud engine. No opaque scores.',
   },
   {
     icon: <IconBoard />,
