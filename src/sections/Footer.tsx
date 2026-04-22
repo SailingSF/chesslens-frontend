@@ -15,7 +15,7 @@ export function Footer() {
           <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="cl-footer-gh">
             <GithubIcon size={13} /> chesslens-core ↗
           </a>
-          <a href="mailto:hello@chesslens.ai">Contact ↗</a>
+          <a href="mailto:notarealemail@chesslens.ai">Contact ↗</a>
         </div>
         <div className="cl-footer-fine">
           © {new Date().getFullYear()} ChessLens · Made for players who want to understand.
