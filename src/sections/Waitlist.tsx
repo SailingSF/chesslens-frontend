@@ -50,7 +50,10 @@ export function Waitlist() {
         }),
       })
 
+      // Apps Script always returns 200, so trust the JSON body over res.ok.
       if (!res.ok) throw new Error(`Request failed (${res.status}).`)
+      const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null
+      if (!body?.ok) throw new Error(body?.error || 'Unknown server error.')
 
       window.dataLayer = window.dataLayer || []
       window.dataLayer.push({
