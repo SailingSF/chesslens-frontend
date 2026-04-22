@@ -987,6 +987,14 @@
   color: var(--paper-faint);
   letter-spacing: 0.04em;
 }
+.cl-form-err {
+  color: var(--amber);
+}
+.cl-form-field input:disabled,
+.cl-form-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .cl-confirm {
   display: flex;

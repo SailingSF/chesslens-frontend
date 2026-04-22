@@ -7,17 +7,67 @@ const BULLETS = [
   { n: 'iii.', text: 'Live coaching during bot matches — questions that make you think, not moves that do the thinking for you.' },
 ]
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const WAITLIST_URL = import.meta.env.VITE_WAITLIST_URL as string | undefined
+
+type Status = 'idle' | 'submitting' | 'success' | 'error'
+
+declare global {
+  interface Window {
+    dataLayer?: Array<Record<string, unknown>>
+  }
+}
+
 export function Waitlist() {
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) return
-    // TODO: wire to a real service (Resend, ConvertKit, Mailchimp, Loops).
-    console.log('[ChessLens waitlist]', email)
-    setSubmitted(true)
+    const value = email.trim()
+    if (!EMAIL_RE.test(value)) {
+      setStatus('error')
+      setErrorMsg('Please enter a valid email address.')
+      return
+    }
+
+    setStatus('submitting')
+    setErrorMsg('')
+
+    try {
+      if (!WAITLIST_URL) throw new Error('Waitlist endpoint not configured.')
+
+      const res = await fetch(WAITLIST_URL, {
+        method: 'POST',
+        // text/plain keeps this a CORS "simple request" — no preflight.
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          email: value,
+          source: 'chesslens.ai',
+          referrer: document.referrer || '',
+          ts: new Date().toISOString(),
+        }),
+      })
+
+      if (!res.ok) throw new Error(`Request failed (${res.status}).`)
+
+      window.dataLayer = window.dataLayer || []
+      window.dataLayer.push({
+        event: 'waitlist_signup',
+        waitlist_source: 'landing_hero',
+        email_domain: value.split('@')[1]?.toLowerCase() ?? '',
+      })
+
+      setStatus('success')
+    } catch (err) {
+      console.error('[ChessLens waitlist]', err)
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again in a moment.')
+    }
   }
+
+  const submitted = status === 'success'
 
   return (
     <section id="waitlist" className="cl-section cl-waitlist">
@@ -41,7 +91,7 @@ export function Waitlist() {
         </ul>
 
         {!submitted ? (
-          <form className="cl-form" onSubmit={handleSubmit}>
+          <form className="cl-form" onSubmit={handleSubmit} noValidate>
             <div className="cl-form-field">
               <label htmlFor="cl-email" className="cl-visually-hidden">Email address</label>
               <input
@@ -51,13 +101,30 @@ export function Waitlist() {
                 autoComplete="email"
                 placeholder="your@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  if (status === 'error') setStatus('idle')
+                }}
+                disabled={status === 'submitting'}
+                aria-invalid={status === 'error'}
+                aria-describedby={status === 'error' ? 'cl-email-err' : undefined}
               />
-              <button type="submit" className="cl-btn cl-btn-primary cl-form-btn">
-                Join the waitlist <span className="cl-btn-arrow" aria-hidden>→</span>
+              <button
+                type="submit"
+                className="cl-btn cl-btn-primary cl-form-btn"
+                disabled={status === 'submitting'}
+              >
+                {status === 'submitting' ? 'Joining…' : 'Join the waitlist'}
+                <span className="cl-btn-arrow" aria-hidden>→</span>
               </button>
             </div>
-            <p className="cl-form-fine">No spam. We&rsquo;ll email when we launch.</p>
+            {status === 'error' ? (
+              <p id="cl-email-err" className="cl-form-fine cl-form-err" role="alert">
+                {errorMsg}
+              </p>
+            ) : (
+              <p className="cl-form-fine">No spam. We&rsquo;ll email when we launch.</p>
+            )}
           </form>
         ) : (
           <div className="cl-confirm" role="status" aria-live="polite">
